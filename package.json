@@ -1,0 +1,81 @@
+{
+  "name": "bracu-cf-vscode-ext",
+  "displayName": ".",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.110.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:java"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "bracu-cf-vscode-ext.login",
+        "title": "BRACU-CF: Login"
+      },
+      {
+        "command": "bracu-cf-vscode-ext.pull",
+        "title": "BRACU-CF: Pull Current Problem"
+      },
+      {
+        "command": "bracu-cf-vscode-ext.generateTests",
+        "title": "BRACU-CF: Generate Custom Test Cases"
+      },
+      {
+        "command": "bracu-cf-vscode-ext.test",
+        "title": "BRACU-CF: Run Solution Against Tests",
+        "icon": "$(play)"
+      },
+      {
+        "command": "bracu-cf-vscode-ext.kill",
+        "title": "BRACU-CF: Kill Browser Session (Optional)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "bracu-cf-vscode-ext.test",
+          "group": "navigation",
+          "when": "resourceExtname == .java"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "bracu-cf-vscode-ext.tests",
+        "key": "ctrl+r",
+        "mac": "cmd+r",
+        "when": "editorTextFocus && resourceExtname == .java"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.110.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.39.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
+  },
+  "dependencies": {
+    "playwright": "^1.58.2",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
