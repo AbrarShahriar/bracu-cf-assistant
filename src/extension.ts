@@ -12,7 +12,15 @@ import generateTests from "./actions/generateTests";
 chromium.use(StealthPlugin());
 
 const globalContext: GlobalContext = {
-  ui: { cfIsActive_StatusItem: null },
+  ui: {
+    components: { cfIsActive_StatusItem: null },
+    colors: {
+      INFO: "#1a73e8",
+      SUCCESS: "#22c55e",
+      WARNING: "#f59e0b",
+      ERROR: "#ef4444",
+    },
+  },
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -24,12 +32,11 @@ export function activate(context: vscode.ExtensionContext) {
   // ---- UI Initialization ----
 
   // CF Window Is Active
-  globalContext.ui.cfIsActive_StatusItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100,
-  );
-  globalContext.ui.cfIsActive_StatusItem.command = "bracu-cf-vscode-ext.login";
-  context.subscriptions.push(globalContext.ui.cfIsActive_StatusItem);
+  globalContext.ui.components.cfIsActive_StatusItem =
+    vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  globalContext.ui.components.cfIsActive_StatusItem.command =
+    "bracu-cf-vscode-ext.login";
+  context.subscriptions.push(globalContext.ui.components.cfIsActive_StatusItem);
   updateStatusBar({ state, globalContext });
 
   // Login

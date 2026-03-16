@@ -1,9 +1,8 @@
 import path from "path";
-import { BrowserContext, BrowserType } from "playwright";
-import { PlaywrightExtraClass } from "playwright-extra";
 import * as vscode from "vscode";
 import { BaseState, GlobalContext } from "../types";
-import { updateStatusBar } from "../utils";
+import { injectBanner, updateStatusBar } from "../utils";
+import { Page } from "playwright-core";
 
 export default async function login(
   state: BaseState,
@@ -37,18 +36,79 @@ export default async function login(
     }
 
     if (!state.browserContext) {
-      state.browserContext = await state.chromium.launchPersistentContext(
-        userDataDir,
-        {
-          headless: false,
-          args: [
-            "--disable-blink-features=AutomationControlled",
-            "--start-maximized",
-            "--no-sandbox",
-          ],
-          viewport: null,
-        },
-      );
+      try {
+        state.browserContext = await state.chromium.launchPersistentContext(
+          userDataDir,
+          {
+            channel: "chrome",
+            headless: false,
+            args: [
+              "--disable-blink-features=AutomationControlled",
+              "--start-maximized",
+              "--no-sandbox",
+            ],
+            viewport: null,
+          },
+        );
+
+        // Script to inject only in codeforces url
+        const attachInstructionListener = (target: Page) => {
+          const handleInjection = async () => {
+            const handleInjection = async () => {
+              const url = target.url();
+              if (!url.includes("codeforces.com")) return;
+
+              // Detect if we are on a problem page
+              const isProblemPage =
+                url.includes("/problem/") ||
+                url.includes("/problemset/problem/");
+
+              if (isProblemPage) {
+                // SUCCESS STATE: Green banner
+                await injectBanner(
+                  target,
+                  "✅ <b>Problem Detected!</b> Return to VS Code and run <code>Pull Problem</code> to begin.",
+                  globalContext.ui.colors.SUCCESS, // Success Green
+                  true,
+                );
+              } else {
+                // INSTRUCTION STATE: Standard Blue/Navy banner
+                await injectBanner(
+                  target,
+                  "Navigate to a problem, then return to VS Code and run <code>Pull Problem</code>",
+                  globalContext.ui.colors.INFO,
+                  true,
+                );
+              }
+            };
+
+            target.on("framenavigated", (frame) => {
+              if (frame === target.mainFrame()) handleInjection();
+            });
+            target.on("load", handleInjection);
+          };
+
+          // Trigger on frame change (handles immediate changes)
+          target.on("framenavigated", (frame) => {
+            if (frame === target.mainFrame()) handleInjection();
+          });
+
+          // Trigger on full load (safety net for redirects)
+          target.on("load", handleInjection);
+        };
+
+        state.browserContext.on("page", (newPage) =>
+          attachInstructionListener(newPage),
+        );
+        state.browserContext
+          .pages()
+          .forEach((p) => attachInstructionListener(p));
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          "Google Chrome was not found on your system. Please install Chrome or configure the extension to use a different browser.",
+        );
+        return;
+      }
 
       updateStatusBar({ state, globalContext });
 
@@ -71,6 +131,14 @@ export default async function login(
     await page.goto("https://www.google.com", {
       waitUntil: "domcontentloaded",
     });
+
+    // Inject a custom message onto the Google page
+    await injectBanner(
+      page,
+      "Initializing secure session... Please wait.",
+      globalContext.ui.colors.INFO, // Google Blue
+      false, // No dismiss button for warmup
+    );
 
     // 2. Small human-like delay (Wait 3-5 seconds)
     await new Promise((resolve) => setTimeout(resolve, 3000));

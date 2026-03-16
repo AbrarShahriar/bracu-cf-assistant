@@ -8,7 +8,7 @@ importers:
 
   .:
     dependencies:
-      playwright:
+      playwright-core:
         specifier: ^1.58.2
         version: 1.58.2
       playwright-extra:
@@ -1992,6 +1992,7 @@ snapshots:
       playwright-core: 1.58.2
     optionalDependencies:
       fsevents: 2.3.2
+    optional: true
 
   prelude-ls@1.2.1: {}
 
