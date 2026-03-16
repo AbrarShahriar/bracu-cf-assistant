@@ -26,7 +26,7 @@ export async function testLocal() {
 
   try {
     outputChannel.appendLine(`Compiling ${className}.java...`);
-    execSync(`javac "${filePath}"`, { cwd: problemDir });
+    execSync(`javac -d bin "${filePath}"`, { cwd: problemDir });
 
     const inputs = fs.readdirSync(testDir).filter((f) => f.startsWith("input"));
 
@@ -40,19 +40,18 @@ export async function testLocal() {
 
       // Execute the Java class and pipe the input file
       const startTime = Date.now();
-      const solutionOutput = execSync(`java ${className} < "${inputPath}"`, {
-        cwd: problemDir,
-        encoding: "utf8",
-        timeout: 2000, // 2 second safety timeout
-      }).trim();
+      const solutionOutput = execSync(
+        `java -cp bin ${className} < "${inputPath}"`,
+        {
+          cwd: problemDir,
+          encoding: "utf8",
+          timeout: 2000, // 2 second safety timeout
+        },
+      ).trim();
       const duration = Date.now() - startTime;
 
       // Custom Tests
       if (expectedOutput === "MANUAL_CHECK") {
-        outputChannel.appendLine(
-          `--- [TEST ${testId}] (Manual Verification) ---`,
-        );
-
         outputChannel.appendLine(`Output:\n${solutionOutput}`);
         outputChannel.appendLine(`Execution Time: ${duration}ms`);
         outputChannel.appendLine(

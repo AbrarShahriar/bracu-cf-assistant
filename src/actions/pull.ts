@@ -5,6 +5,7 @@ import { BaseState, VariableRange } from "../types";
 import { getFastIOContent } from "../generators/fastioContent";
 import { getJavaTemplate } from "../generators/javaTemplate";
 import { generateMarkdown } from "../generators/markdown";
+import { getGenContent } from "../generators/genContent";
 
 export default async function pull(state: BaseState) {
   if (!state.browserContext) {
@@ -123,19 +124,19 @@ export default async function pull(state: BaseState) {
   if (!fs.existsSync(problemDirPath))
     fs.mkdirSync(problemDirPath, { recursive: true });
 
-  // 1. Generate Markdown
+  // Generate Markdown
   fs.writeFileSync(
     path.join(problemDirPath, "Instructions.md"),
     generateMarkdown(data),
   );
 
-  // 2. Generate Java Solution Template
+  // Generate Java Solution Template
   fs.writeFileSync(
     path.join(problemDirPath, `${data.label}.java`),
     getJavaTemplate(data.label),
   );
 
-  // 3. Generate FastIO Utility
+  // Generate FastIO Utility
   fs.writeFileSync(
     path.join(problemDirPath, `FastIO.java`),
     getFastIOContent(),
@@ -157,26 +158,11 @@ export default async function pull(state: BaseState) {
     testcaseId++;
   }
 
-  // Generate Test Case Files Collected From Constraints
-  // const constraints = data.constraints;
-  // for (let i = 1; i <= 5; i++) {
-  //   let customInput = "";
-  //   constraints.forEach((c) => {
-  //     const maxVal = eval(c.max); // Be careful with eval, or use a simple parser
-  //     const rand = Math.floor(Math.random() * maxVal) + 1;
-  //     customInput += rand + " ";
-  //   });
-
-  //   fs.writeFileSync(
-  //     path.join(testDir, `input${testcaseId}.txt`),
-  //     customInput.trim(),
-  //   );
-  //   fs.writeFileSync(
-  //     path.join(testDir, `expected${testcaseId}.txt`),
-  //     "MANUAL_CHECK",
-  //   );
-  //   testcaseId++;
-  // }
+  // Generate Generator File
+  fs.writeFileSync(
+    path.join(problemDirPath, `Gen.java`),
+    getGenContent(testcaseId),
+  );
 
   // Open the Java file automatically
   const javaDoc = await vscode.workspace.openTextDocument(

@@ -12,10 +12,10 @@ export default function generateTests() {
 
   try {
     outputChannel.appendLine("Compiling Generator...");
-    execSync(`javac Gen.java`, { cwd: problemDir });
+    execSync(`javac -d bin Gen.java`, { cwd: problemDir });
 
     outputChannel.appendLine("Running Generator...");
-    execSync(`java Gen`, { cwd: problemDir });
+    execSync(`java -cp bin Gen`, { cwd: problemDir });
     outputChannel.appendLine("Test Cases Generated.");
 
     vscode.window.showInformationMessage("Custom test cases generated..");
