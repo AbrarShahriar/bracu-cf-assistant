@@ -13,6 +13,8 @@ export type Colors = {
   ERROR: string;
   INFO: string;
   WARNING: string;
+  Green: string;
+  Red: string;
 };
 
 export type GlobalContext = {
@@ -22,6 +24,7 @@ export type GlobalContext = {
     };
     colors: Colors;
   };
+  config: vscode.WorkspaceConfiguration;
 };
 
 export type VariableRange = {

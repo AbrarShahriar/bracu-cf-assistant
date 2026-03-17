@@ -1,71 +1,32 @@
-# bracu-cf-vscode-ext README
+# BRACU Codeforces Assistant 🚀
 
-This is the README for your extension "bracu-cf-vscode-ext". After writing up a brief description, we recommend including the following sections.
+A lightweight VS Code extension designed for competitive programmers to bridge the gap between the browser and the editor.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Secure Stealth Login:** Uses a persistent session to handle Codeforces login and Cloudflare verifications smoothly.
+- **Dynamic HUD:** In-browser instructions that guide you through problem selection.
+- **Problem Pulling:** Pull test cases and problem statements directly into your workspace.
+- **Browser Choice:** Supports Google Chrome and Microsoft Edge without downloading extra binaries.
 
-For example if there is an image subfolder under your extension project workspace:
+## Setup & Requirements
 
-\!\[feature X\]\(images/feature-x.png\)
+This extension uses your **locally installed browser** to keep the installation size small.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. Ensure you have **Google Chrome** (recommended) or **Microsoft Edge** installed.
+2. If you use Edge, go to `Settings > Extensions > Codeforces Assistant` and change the Browser Channel.
 
-## Requirements
+## Usage
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+1. Run the command `CF: Login/Launch Browser`.
+2. Navigate to your desired problem on Codeforces.
+3. Once the green "Problem Detected" banner appears, return to VS Code.
+4. Run `CF: Pull Problem`.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+- `bracu-cf.browserChannel`: Switch between `chrome` and `msedge`.
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+_Developed for BRACU CSE Students._

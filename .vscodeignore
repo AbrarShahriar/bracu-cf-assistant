@@ -9,3 +9,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+.github/**
+pnpm-lock.yaml
+node_modules/@types/**
+node_modules/typescript/**

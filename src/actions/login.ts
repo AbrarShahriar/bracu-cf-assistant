@@ -36,11 +36,13 @@ export default async function login(
     }
 
     if (!state.browserContext) {
+      const channel =
+        globalContext.config.get<string>("browserChannel") || "chrome";
       try {
         state.browserContext = await state.chromium.launchPersistentContext(
           userDataDir,
           {
-            channel: "chrome",
+            channel,
             headless: false,
             args: [
               "--disable-blink-features=AutomationControlled",
@@ -67,7 +69,7 @@ export default async function login(
                 // SUCCESS STATE: Green banner
                 await injectBanner(
                   target,
-                  "✅ <b>Problem Detected!</b> Return to VS Code and run <code>Pull Problem</code> to begin.",
+                  "✅ <b>Problem Detected!</b> Return to VS Code and run <code>Pull Current Problem</code> to begin.",
                   globalContext.ui.colors.SUCCESS, // Success Green
                   true,
                 );
@@ -75,7 +77,7 @@ export default async function login(
                 // INSTRUCTION STATE: Standard Blue/Navy banner
                 await injectBanner(
                   target,
-                  "Navigate to a problem, then return to VS Code and run <code>Pull Problem</code>",
+                  "Navigate to a problem, then return to VS Code and run <code>Pull Current Problem</code>",
                   globalContext.ui.colors.INFO,
                   true,
                 );
@@ -105,7 +107,7 @@ export default async function login(
           .forEach((p) => attachInstructionListener(p));
       } catch (error) {
         vscode.window.showErrorMessage(
-          "Google Chrome was not found on your system. Please install Chrome or configure the extension to use a different browser.",
+          `Could not find ${channel}. Please install it or change the browser in Extension Settings.`,
         );
         return;
       }

@@ -7,12 +7,14 @@ export function updateStatusBar(props: {
   if (props.globalContext.ui.components.cfIsActive_StatusItem) {
     if (props.state.browserContext) {
       props.globalContext.ui.components.cfIsActive_StatusItem.text = `$(browser) CF: Active`;
-      props.globalContext.ui.components.cfIsActive_StatusItem.color = "#4ec9b0"; // Green
+      props.globalContext.ui.components.cfIsActive_StatusItem.color =
+        props.globalContext.ui.colors.Green;
       props.globalContext.ui.components.cfIsActive_StatusItem.tooltip =
         "Codeforces session is active. Click to re-launch.";
     } else {
       props.globalContext.ui.components.cfIsActive_StatusItem.text = `$(circle-slash) CF: Inactive`;
-      props.globalContext.ui.components.cfIsActive_StatusItem.color = "#f44336"; // Red
+      props.globalContext.ui.components.cfIsActive_StatusItem.color =
+        props.globalContext.ui.colors.Red; // Red
       props.globalContext.ui.components.cfIsActive_StatusItem.tooltip =
         "No active CF session. Click to Login.";
     }
@@ -36,7 +38,7 @@ export const injectBanner = async (
   try {
     await page.evaluate(
       async ({ text, accentColor, showDismiss }: BannerType) => {
-        // 1. Robust check for body existence (Wait up to 2.5s)
+        // Wait for body upto 2.5s
         let checks = 0;
         while (!document.body && checks < 25) {
           await new Promise((r) => setTimeout(r, 100));
@@ -47,7 +49,7 @@ export const injectBanner = async (
           return;
         if (sessionStorage.getItem("cf-banner-dismissed")) return;
 
-        // 2. Inject Animation Styles
+        // Animation styles
         const styleId = "cf-extension-banner-style";
         if (!document.getElementById(styleId)) {
           const style = document.createElement("style");
@@ -61,6 +63,7 @@ export const injectBanner = async (
           document.head.appendChild(style);
         }
 
+        // Banner body
         const banner = document.createElement("div");
         banner.id = "cf-extension-banner";
         banner.innerHTML = `
@@ -88,7 +91,6 @@ export const injectBanner = async (
           fontFamily: "Inter, system-ui, sans-serif",
           boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
           borderBottom: "1px solid #1e293b",
-          // APPLY ANIMATION
           animation:
             "bannerSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         });
@@ -109,6 +111,6 @@ export const injectBanner = async (
       { text, accentColor, showDismiss },
     );
   } catch (e) {
-    // Page might have navigated away during injection
+    console.error(e);
   }
 };

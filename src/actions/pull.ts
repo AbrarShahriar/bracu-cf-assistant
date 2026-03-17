@@ -6,6 +6,7 @@ import { getFastIOContent } from "../generators/fastioContent";
 import { getJavaTemplate } from "../generators/javaTemplate";
 import { generateMarkdown } from "../generators/markdown";
 import { getGenContent } from "../generators/genContent";
+import FileManager from "../helper/FileManager";
 
 export default async function pull(state: BaseState) {
   if (!state.browserContext) {
@@ -43,9 +44,9 @@ export default async function pull(state: BaseState) {
           .join("\n\n")
       : "";
 
+    const inputSpec = getElText(".input-specification");
     const outputSpec = getElText(".output-specification");
     const note = getElText(".note");
-    const inputSpec = getElText(".input-specification");
 
     const timeLimit = getElText(".time-limit")
       .replace("time limit per test", "")
@@ -55,58 +56,17 @@ export default async function pull(state: BaseState) {
       .trim();
 
     const inputs = Array.from(document.querySelectorAll(".input pre")).map(
-      (el) => el.textContent?.trim(),
+      (el) =>
+        Array.from(el.childNodes)
+          .map((d) => d.textContent)
+          .join("\n"),
     );
     const outputs = Array.from(document.querySelectorAll(".output pre")).map(
-      (el) => el.textContent?.trim(),
+      (el) =>
+        Array.from(el.childNodes)
+          .map((d) => d.textContent)
+          .join("\n"),
     );
-
-    // function extractConstraints() {
-    //   const results: VariableRange[] = [];
-    //   const latex = Array.from(
-    //     document.querySelectorAll(`script[type="math/tex"]`),
-    //   )
-    //     .filter((el) => el.textContent.includes("leq"))
-    //     .map((el) => el.textContent)
-    //     .join("\n");
-
-    //   const normalized = latex
-    //     .replace(/\\leq/g, "≤")
-    //     .replace(/\\le/g, "≤")
-    //     .replace(/\s+/g, " ");
-
-    //   // Split constraints by comma only if it separates different constraints
-    //   const segments = normalized
-    //     .replace(/[()]/g, "")
-    //     .split(/,(?=\s*\d|\s*[a-zA-Z])/)
-    //     .map((s) => s.trim())
-    //     .filter(Boolean);
-
-    //   for (const seg of segments) {
-    //     const match = seg.match(/^(.+?)≤(.+?)≤(.+)$/);
-
-    //     if (!match) continue;
-
-    //     const min = match[1].trim();
-    //     const varsPart = match[2].trim();
-    //     const max = match[3].trim();
-
-    //     const variables = varsPart
-    //       .split(",")
-    //       .map((v) => v.trim())
-    //       .filter(Boolean);
-
-    //     for (const variable of variables) {
-    //       results.push({
-    //         variable,
-    //         min,
-    //         max,
-    //       });
-    //     }
-    //   }
-
-    //   return results;
-    // }
 
     return {
       title: fullTitle,
@@ -119,66 +79,45 @@ export default async function pull(state: BaseState) {
       note,
       inputs,
       outputs,
-      // constraints: extractConstraints(),
     };
   });
 
   // --- FILE SYSTEM LOGIC ---
-  const folders = vscode.workspace.workspaceFolders;
-  if (!folders)
-    return vscode.window.showErrorMessage("Open a workspace first!");
-
   const problemFolderName = data.title.replace(/[:*?"<>|]/g, ""); // Sanitize
-  const problemDirPath = path.join(folders[0].uri.fsPath, problemFolderName);
+  const fileManager = new FileManager();
+  // Create Dir in root
+  fileManager.changeDirOrCreate(problemFolderName);
 
-  if (!fs.existsSync(problemDirPath))
-    fs.mkdirSync(problemDirPath, { recursive: true });
+  // Generate Files
+  fileManager.writeFiles([
+    {
+      fileName: "Instructions.md",
+      content: generateMarkdown(data),
+    },
+    {
+      fileName: `${data.label}.java`,
+      content: getJavaTemplate(data.label),
+    },
+    { fileName: "FastIO.java", content: getFastIOContent() },
+  ]);
 
-  // Generate Markdown
-  fs.writeFileSync(
-    path.join(problemDirPath, "Instructions.md"),
-    generateMarkdown(data),
-  );
-
-  // Generate Java Solution Template
-  fs.writeFileSync(
-    path.join(problemDirPath, `${data.label}.java`),
-    getJavaTemplate(data.label),
-  );
-
-  // Generate FastIO Utility
-  fs.writeFileSync(
-    path.join(problemDirPath, `FastIO.java`),
-    getFastIOContent(),
-  );
-
-  // 4. Generate Test Case Files Collected From Codeforces
-  const testDir = path.join(problemDirPath, "tests");
-  if (!fs.existsSync(testDir)) fs.mkdirSync(testDir);
+  // Create tests in root/problem-name
+  fileManager.changeDirOrCreate(path.join(problemFolderName, "tests"));
 
   let testcaseId = 1;
   for (let i = 0; i < data.inputs.length; i++) {
     const input = data.inputs[i];
     const output = data.outputs[i];
-    fs.writeFileSync(path.join(testDir, `input${testcaseId}.txt`), input || "");
-    fs.writeFileSync(
-      path.join(testDir, `expected${testcaseId}.txt`),
-      output || "",
-    );
+    fileManager.write(`input${testcaseId}.txt`, input || "");
+    fileManager.write(`expected${testcaseId}.txt`, output || "");
     testcaseId++;
   }
+  fileManager.goBack();
 
-  // Generate Generator File
-  fs.writeFileSync(
-    path.join(problemDirPath, `Gen.java`),
-    getGenContent(testcaseId),
-  );
+  fileManager.write(`Gen.java`, getGenContent(testcaseId));
 
-  // Open the Java file automatically
-  const javaDoc = await vscode.workspace.openTextDocument(
-    path.join(problemDirPath, `${data.label}.java`),
-  );
-  await vscode.window.showTextDocument(javaDoc);
+  // Open the Java file
+  await fileManager.openInVscode(`${data.label}.java`);
 
   vscode.window.showInformationMessage(`Pulled ${data.title} successfully!`);
 }

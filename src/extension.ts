@@ -19,13 +19,14 @@ const globalContext: GlobalContext = {
       SUCCESS: "#22c55e",
       WARNING: "#f59e0b",
       ERROR: "#ef4444",
+      Green: "#4ec9b0",
+      Red: "#f44336",
     },
   },
+  config: vscode.workspace.getConfiguration("bracu-cf-vscode-ext"),
 };
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log("Congratulations, your extension for codeforces is now active!");
-
   // State
   const state: BaseState = { browserContext: null, chromium, context };
 
@@ -38,6 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
     "bracu-cf-vscode-ext.login";
   context.subscriptions.push(globalContext.ui.components.cfIsActive_StatusItem);
   updateStatusBar({ state, globalContext });
+
+  // ---- Command Registration ----
 
   // Login
   let loginToCf = vscode.commands.registerCommand(

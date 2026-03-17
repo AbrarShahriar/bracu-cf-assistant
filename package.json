@@ -1,13 +1,26 @@
 {
   "name": "bracu-cf-vscode-ext",
-  "displayName": ".",
-  "description": "",
+  "displayName": "BRACU Codeforces Assistant",
+  "description": "Streamline Codeforces contests with automated login and problem pulling.",
   "version": "0.0.1",
+  "publisher": "AbrarShahriar",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbrarShahriar/bracu-cf-assistant"
+  },
   "engines": {
     "vscode": "^1.110.0"
   },
   "categories": [
-    "Other"
+    "Education",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "Codeforces",
+    "Competitive Programming",
+    "BRACU",
+    "Problem Puller",
+    "Automation"
   ],
   "activationEvents": [
     "onLanguage:java"
@@ -53,7 +66,21 @@
         "mac": "cmd+r",
         "when": "editorTextFocus && resourceExtname == .java"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "BRACU Codeforces Assistant",
+      "properties": {
+        "bracu-cf-vscode-ext.browserChannel": {
+          "type": "string",
+          "enum": [
+            "chrome",
+            "msedge"
+          ],
+          "default": "chrome",
+          "description": "Select which installed browser to use. Note: Browser must be installed on your system."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
@@ -61,7 +88,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "build-local": "pnpm run compile && npx @vscode/vsce package --no-dependencies --skip-license"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
