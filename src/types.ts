@@ -24,6 +24,7 @@ export type GlobalContext = {
     };
     colors: Colors;
   };
+  namespace: "bracu-cf-assistant";
   config: vscode.WorkspaceConfiguration;
 };
 

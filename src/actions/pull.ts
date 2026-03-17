@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import * as fs from "fs";
 import { BaseState } from "../types";
 import { getFastIOContent } from "../generators/fastioContent";
 import { getJavaTemplate } from "../generators/javaTemplate";

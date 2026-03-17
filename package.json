@@ -1,9 +1,10 @@
 {
-  "name": "bracu-cf-vscode-ext",
+  "name": "bracu-cf-assistant",
   "displayName": "BRACU Codeforces Assistant",
   "description": "Streamline Codeforces contests with automated login and problem pulling.",
   "version": "0.0.1",
   "publisher": "AbrarShahriar",
+  "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/AbrarShahriar/bracu-cf-assistant"
@@ -29,31 +30,31 @@
   "contributes": {
     "commands": [
       {
-        "command": "bracu-cf-vscode-ext.login",
+        "command": "bracu-cf-assistant.login",
         "title": "BRACU-CF: Login"
       },
       {
-        "command": "bracu-cf-vscode-ext.pull",
+        "command": "bracu-cf-assistant.pull",
         "title": "BRACU-CF: Pull Current Problem"
       },
       {
-        "command": "bracu-cf-vscode-ext.generateTests",
+        "command": "bracu-cf-assistant.generateTests",
         "title": "BRACU-CF: Generate Custom Test Cases"
       },
       {
-        "command": "bracu-cf-vscode-ext.test",
+        "command": "bracu-cf-assistant.test",
         "title": "BRACU-CF: Run Solution Against Tests",
         "icon": "$(play)"
       },
       {
-        "command": "bracu-cf-vscode-ext.kill",
+        "command": "bracu-cf-assistant.kill",
         "title": "BRACU-CF: Kill Browser Session (Optional)"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "bracu-cf-vscode-ext.test",
+          "command": "bracu-cf-assistant.test",
           "group": "navigation",
           "when": "resourceExtname == .java"
         }
@@ -61,7 +62,7 @@
     },
     "keybindings": [
       {
-        "command": "bracu-cf-vscode-ext.tests",
+        "command": "bracu-cf-assistant.tests",
         "key": "ctrl+r",
         "mac": "cmd+r",
         "when": "editorTextFocus && resourceExtname == .java"
@@ -70,7 +71,7 @@
     "configuration": {
       "title": "BRACU Codeforces Assistant",
       "properties": {
-        "bracu-cf-vscode-ext.browserChannel": {
+        "bracu-cf-assistant.browserChannel": {
           "type": "string",
           "enum": [
             "chrome",

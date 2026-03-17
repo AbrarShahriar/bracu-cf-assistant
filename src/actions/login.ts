@@ -120,7 +120,7 @@ export default async function login(
         updateStatusBar({
           state: { ...state, browserContext: null },
           globalContext,
-        }); // Turns the icon red automatically
+        });
       });
     }
 

@@ -23,7 +23,8 @@ const globalContext: GlobalContext = {
       Red: "#f44336",
     },
   },
-  config: vscode.workspace.getConfiguration("bracu-cf-vscode-ext"),
+  config: vscode.workspace.getConfiguration("bracu-cf-assistant"),
+  namespace: "bracu-cf-assistant",
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -35,8 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
   // CF Window Is Active
   globalContext.ui.components.cfIsActive_StatusItem =
     vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  globalContext.ui.components.cfIsActive_StatusItem.command =
-    "bracu-cf-vscode-ext.login";
+  globalContext.ui.components.cfIsActive_StatusItem.command = `${globalContext.namespace}.login`;
   context.subscriptions.push(globalContext.ui.components.cfIsActive_StatusItem);
   updateStatusBar({ state, globalContext });
 
@@ -44,35 +44,35 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Login
   let loginToCf = vscode.commands.registerCommand(
-    "bracu-cf-vscode-ext.login",
+    `${globalContext.namespace}.login`,
     async () => login(state, globalContext),
   );
   context.subscriptions.push(loginToCf);
 
   // Pull
   let pullProblem = vscode.commands.registerCommand(
-    "bracu-cf-vscode-ext.pull",
+    `${globalContext.namespace}.pull`,
     async () => pull(state),
   );
   context.subscriptions.push(pullProblem);
 
   // Generate Custom Tests
   const generateTestsCommand = vscode.commands.registerCommand(
-    "bracu-cf-vscode-ext.generateTests",
+    `${globalContext.namespace}.generateTests`,
     generateTests,
   );
   context.subscriptions.push(generateTestsCommand);
 
   // Run Tests
   const testCommand = vscode.commands.registerCommand(
-    "bracu-cf-vscode-ext.test",
+    `${globalContext.namespace}.test`,
     testLocal,
   );
   context.subscriptions.push(testCommand);
 
   // Kill (Optional)
   let killBrowser = vscode.commands.registerCommand(
-    "bracu-cf-vscode-ext.kill",
+    `${globalContext.namespace}.kill`,
     async () => kill(state, globalContext),
   );
   context.subscriptions.push(killBrowser);
