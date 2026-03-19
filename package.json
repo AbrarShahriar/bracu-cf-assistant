@@ -2,7 +2,7 @@
   "name": "bracu-cf-assistant",
   "displayName": "BRACU Codeforces Assistant",
   "description": "Streamline Codeforces contests with automated login and problem pulling.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "AbrarShahriar",
   "icon": "icon.png",
   "repository": {
