@@ -11,24 +11,23 @@ import generateTests from "./actions/generateTests";
 
 chromium.use(StealthPlugin());
 
-const globalContext: GlobalContext = {
-  ui: {
-    components: { cfIsActive_StatusItem: null },
-    colors: {
-      INFO: "#1a73e8",
-      SUCCESS: "#22c55e",
-      WARNING: "#f59e0b",
-      ERROR: "#ef4444",
-      Green: "#4ec9b0",
-      Red: "#f44336",
-    },
-  },
-  config: vscode.workspace.getConfiguration("bracu-cf-assistant"),
-  namespace: "bracu-cf-assistant",
-};
-
 export function activate(context: vscode.ExtensionContext) {
-  // State
+  // State and Context
+  const globalContext: GlobalContext = {
+    ui: {
+      components: { cfIsActive_StatusItem: null },
+      colors: {
+        INFO: "#1a73e8",
+        SUCCESS: "#22c55e",
+        WARNING: "#f59e0b",
+        ERROR: "#ef4444",
+        Green: "#4ec9b0",
+        Red: "#f44336",
+      },
+    },
+    config: vscode.workspace.getConfiguration("bracu-cf-assistant"),
+    namespace: "bracu-cf-assistant",
+  };
   const state: BaseState = { browserContext: null, chromium, context };
 
   // ---- UI Initialization ----

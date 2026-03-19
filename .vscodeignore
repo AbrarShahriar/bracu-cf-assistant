@@ -13,3 +13,4 @@ vsc-extension-quickstart.md
 pnpm-lock.yaml
 node_modules/@types/**
 node_modules/typescript/**
+**/*.vsix
